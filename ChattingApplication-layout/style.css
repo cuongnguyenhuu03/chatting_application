@@ -1,0 +1,128 @@
+* {
+
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    font-family: sans-serif;
+}
+
+.container {
+    width: 800px;
+    height: 500px;
+    background-color: rgb(230, 239, 247);
+    border: 1px solid #e6e5e5;
+    margin: auto;
+    margin-top: 100px;
+    border-radius: 10px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    display: flex;
+}
+
+.list-user {
+    list-style: none;
+    border-right: 1px solid #e5e4e4;
+    width: 30%;
+    height: 100%;
+}
+
+.list-user-avt {
+    width: 40px;
+    height: 40px;
+    margin: 0 10px;
+}
+
+.list-user-item {
+    height: 60px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin: 15px 10px;
+}
+
+.message-container {
+    width: 70%;
+}
+
+.message-header-avt {
+    margin: 0 20px;
+}
+
+.message-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 10px;
+    background-color: #e5e4e4;
+    border-top-right-radius: 8px;
+}
+
+.message-content-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    height: 380px;
+    overflow-y: scroll;
+}
+
+.message-header-container {}
+
+.message-content {
+    padding: 10px 20px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    width: fit-content;
+    margin-top: 16px;
+    border-radius: 8px;
+
+}
+
+.message-sender {
+    background-color: rgb(133, 177, 238);
+
+}
+
+.message-reciever {
+    margin-right: 0 !important;
+    align-self: flex-end;
+
+}
+
+.message-form-container {
+    width: 100%;
+}
+
+#messageForm {
+    width: 100%;
+}
+
+.message-input {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#message {
+    width: 80%;
+    margin: 0 20px;
+    border-radius: 6px;
+    background-color: #c6c4c4;
+    border: none;
+    padding: 10px;
+    outline: none;
+}
+
+.send-message {
+    color: #c6c4c4;
+    border: none;
+    background-color: transparent;
+}
+
+.send-message i {
+    font-size: 24px;
+    cursor: pointer;
+}
