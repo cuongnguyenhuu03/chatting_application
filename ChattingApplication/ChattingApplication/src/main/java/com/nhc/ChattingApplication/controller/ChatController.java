@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.nhc.ChattingApplication.entity.ChatMessage;
 import com.nhc.ChattingApplication.entity.ChatNotification;
 import com.nhc.ChattingApplication.entity.User;
+import com.nhc.ChattingApplication.response.EntityResponse;
 import com.nhc.ChattingApplication.service.ChatMessageService;
 import com.nhc.ChattingApplication.service.UserService;
 
@@ -50,8 +51,13 @@ public class ChatController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> findConnectedUsers() {
-        return ResponseEntity.ok(userService.findConnectedUsers());
+    public ResponseEntity<EntityResponse> findConnectedUsers() {
+
+        EntityResponse e = new EntityResponse();
+        e.setDT(userService.findConnectedUsers());
+        e.setEC(200);
+        e.setEM("success");
+        return ResponseEntity.ok(e);
     }
 
     @MessageMapping("/chat")

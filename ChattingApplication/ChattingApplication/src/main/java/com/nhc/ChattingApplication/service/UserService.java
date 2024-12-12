@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.nhc.ChattingApplication.entity.Status;
 import com.nhc.ChattingApplication.entity.User;
 import com.nhc.ChattingApplication.repository.UserRepository;
 
@@ -23,19 +22,20 @@ public class UserService {
     }
 
     public void updateStatus(User user) {
-        user.setStatus(Status.ONLINE);
-        this.userRepository.save(user);
+        var storedUser = this.userRepository.findByEmail(user.getEmail());
+        storedUser.setStatus("ONLINE");
+        this.userRepository.save(storedUser);
     }
 
     public void disconnect(User user) {
         var storedUser = this.userRepository.findByEmail(user.getEmail());
         if (storedUser != null) {
-            storedUser.setStatus(Status.OFFLINE);
+            storedUser.setStatus("OFFLINE");
             this.userRepository.save(storedUser);
         }
     }
 
     public List<User> findConnectedUsers() {
-        return this.userRepository.findAllByStatus(Status.ONLINE);
+        return this.userRepository.findAllByStatus("ONLINE");
     }
 }

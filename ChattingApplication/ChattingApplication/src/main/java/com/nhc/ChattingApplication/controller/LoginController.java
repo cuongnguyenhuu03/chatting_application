@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nhc.ChattingApplication.entity.User;
+import com.nhc.ChattingApplication.response.EntityResponse;
 import com.nhc.ChattingApplication.util.SecurityUtil;
 
 @RestController
@@ -26,7 +27,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> postMethodName(@RequestBody User user) {
+    public ResponseEntity<EntityResponse> postMethodName(@RequestBody User user) {
 
         // nạp input gồm username/ password vào security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -39,7 +40,12 @@ public class LoginController {
 
         String access_token = this.securityUtil.createAccessToken(user.getEmail());
 
-        return ResponseEntity.ok().body(access_token);
+        EntityResponse e = new EntityResponse();
+        e.setDT(access_token);
+        e.setEC(200);
+        e.setEM("success");
+
+        return ResponseEntity.ok().body(e);
     }
 
 }

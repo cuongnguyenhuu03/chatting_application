@@ -1,36 +1,39 @@
-* {
-
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-}
-
-html {
-    font-family: sans-serif;
-}
+$container-width: 800px;
+$container-height: 500px;
+$container-bg-color: rgb(230, 239, 247);
+$border-color: #e6e5e5;
+$shadow-color: rgba(149, 157, 165, 0.2);
+$list-user-width: 30%;
+$list-user-avt-size: 40px;
+$message-container-width: 70%;
+$message-bg-color: #e5e4e4;
+$message-padding: 30px;
+$message-height: 380px;
+$input-bg-color: #c6c4c4;
+$icon-color: #c6c4c4;
 
 .container {
-    width: 800px;
-    height: 500px;
-    background-color: rgb(230, 239, 247);
-    border: 1px solid #e6e5e5;
+    width: $container-width;
+    height: $container-height;
+    background-color: $container-bg-color;
+    border: 1px solid $border-color;
     margin: auto;
     margin-top: 100px;
     border-radius: 10px;
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    box-shadow: $shadow-color 0px 8px 24px;
     display: flex;
 }
 
 .list-user {
     list-style: none;
-    border-right: 1px solid #e5e4e4;
-    width: 30%;
+    border-right: 1px solid $border-color;
+    width: $list-user-width;
     height: 100%;
 }
 
 .list-user-avt {
-    width: 40px;
-    height: 40px;
+    width: $list-user-avt-size;
+    height: $list-user-avt-size;
     margin: 0 10px;
 }
 
@@ -44,7 +47,7 @@ html {
 }
 
 .message-container {
-    width: 70%;
+    width: $message-container-width;
 }
 
 .message-header-avt {
@@ -57,7 +60,7 @@ html {
     align-items: center;
     justify-content: flex-end;
     padding: 10px;
-    background-color: #e5e4e4;
+    background-color: $message-bg-color;
     border-top-right-radius: 8px;
 }
 
@@ -65,8 +68,8 @@ html {
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 30px;
-    height: 380px;
+    padding: $message-padding;
+    height: $message-height;
     overflow-y: scroll;
 }
 
@@ -74,22 +77,19 @@ html {
 
 .message-content {
     padding: 10px 20px;
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    box-shadow: $shadow-color 0px 8px 24px;
     width: fit-content;
     margin-top: 16px;
     border-radius: 8px;
-
 }
 
 .message-sender {
     background-color: rgb(133, 177, 238);
-
 }
 
 .message-reciever {
     margin-right: 0 !important;
     align-self: flex-end;
-
 }
 
 .message-form-container {
@@ -110,14 +110,14 @@ html {
     width: 80%;
     margin: 0 20px;
     border-radius: 6px;
-    background-color: #c6c4c4;
+    background-color: $input-bg-color;
     border: none;
     padding: 10px;
     outline: none;
 }
 
 .send-message {
-    color: #c6c4c4;
+    color: $icon-color;
     border: none;
     background-color: transparent;
 }
