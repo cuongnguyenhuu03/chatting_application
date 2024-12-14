@@ -61,9 +61,10 @@ const SignInPage = () => {
             try {
                 const res = await postLogin({ email, password });
                 if (res) {
-                    const { userName } = jwtDecode(res?.dt);
+                    const { id, userName } = jwtDecode(res?.dt);
                     if (userName) {
                         localStorage.setItem('username', userName)
+                        localStorage.setItem('id', id);
                         localStorage.setItem('access_token', res?.dt);
                         navigate('/chatting');
                     }

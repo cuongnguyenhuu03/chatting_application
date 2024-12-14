@@ -26,7 +26,7 @@ public class SecurityUtil {
     @Value("${jobhunter.jwt.access-token-validity-in-seconds}")
     private Long accessTokenExpiration;
 
-    public String createAccessToken(String email) {
+    public String createAccessToken(String email, Long id) {
 
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
@@ -37,6 +37,7 @@ public class SecurityUtil {
                 .subject(email) // email
                 .claim("permission", "User")
                 .claim("userName", email)
+                .claim("id", id)
                 .build();
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,

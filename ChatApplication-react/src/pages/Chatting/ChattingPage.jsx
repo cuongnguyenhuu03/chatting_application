@@ -4,8 +4,8 @@ import avatarUser from '../../assets/avt/avt.png';
 import SockJS from "sockjs-client/dist/sockjs"
 import { Stomp } from '@stomp/stompjs';
 import { toast } from 'react-toastify';
-import { getUsersActive } from '../../services/userService';
-import _ from 'lodash';
+import { getAllMessages, getUsersActive } from '../../services/userService';
+import _, { result } from 'lodash';
 import { SendOutlined } from '@ant-design/icons';
 
 const ChattingPage = () => {
@@ -14,10 +14,12 @@ const ChattingPage = () => {
     const [usersActive, setUsersActive] = useState([]);
     const [userSelected, setUserSelected] = useState({});
     const [inputMessage, setInputMessage] = useState('');
+    const [messages, setMessages] = useState([]);
 
-    const onMessageReceived = () => {
-
-    }
+    const onMessageReceived = (payload) => {
+        const message = JSON.parse(payload.body);
+        setMessages(prevMessages => [...prevMessages, { type: 'receiver', content: message?.content }])
+    };
 
     const fetchUsersActive = useCallback(async () => {
         try {
@@ -34,6 +36,30 @@ const ChattingPage = () => {
         }
     }, []);
 
+    const buildDataMessage = (dataMessages = []) => {
+        if (!dataMessages?.length) return;
+        const userId = +localStorage.getItem('id');
+        const results = dataMessages.map(data => ({
+            type: data?.sender?.id === userId ? 'sender' : 'receiver',
+            content: data?.content,
+        }));
+        setMessages(results);
+        return results;
+    };
+
+    const fetchAllMessages = useCallback(async () => {
+        try {
+            const res = await getAllMessages(Number(localStorage.getItem('id')), +userSelected?.id);
+            if (res?.ec === 200) {
+                buildDataMessage(res?.dt ?? []);
+            } else {
+                toast.error(res?.em ?? 'Fetching users active failed!');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(error.message);
+        }
+    }, [+userSelected?.id]);
 
     useEffect(() => {
         let client = null;
@@ -67,34 +93,38 @@ const ChattingPage = () => {
         };
     }, [userName]);
 
+    useEffect(() => {
+        if (stompClient && userSelected?.id)
+            fetchAllMessages();
+    }, [stompClient, userSelected?.id]);
 
-
-    const [messages, setMessages] = useState([
-        { type: 'sender', content: 'Hello' },
-        { type: 'receiver', content: 'Good morning' },
-        { type: 'sender', content: 'Hello' }, { type: 'sender', content: 'Hello' },
-        { type: 'receiver', content: 'Good morning' }, { type: 'receiver', content: 'Good morning' }, { type: 'receiver', content: 'Good morning' },
-    ]);
-
-
+    // Tối ưu hóa khi thay đổi giá trị trong input
+    const handleInputChange = useCallback((e) => {
+        setInputMessage(e.target.value);
+    }, []); // Giữ nguyên hàm này để tránh re-render không cần thiết
 
     const handleSendMessage = (e) => {
         e.preventDefault();
         if (inputMessage.trim() && stompClient) {
+            const receiver = {
+                id: userSelected?.id
+            };
+            const sender = {
+                id: Number(localStorage.getItem('id'))
+            };
             const chatMessage = {
-                senderId: userName,
-                recipientId: userSelected?.email,
+                sender,
+                receiver,
                 content: inputMessage.trim(),
                 timestamp: new Date()
             };
             stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
-            setMessages([...messages, { type: 'sender', content: inputMessage.trim() }]);
+            setMessages(prevMessages => [...prevMessages, { type: 'sender', content: inputMessage.trim() }]);
             setInputMessage('');
         }
-
-
     };
 
+    console.log('RENDER');
     return (
         <div className="container" id="chat-page">
             <div className="list-user">
@@ -138,7 +168,7 @@ const ChattingPage = () => {
                                     id="message"
                                     placeholder="Type your message..."
                                     value={inputMessage}
-                                    onChange={(e) => setInputMessage(e.target.value)}
+                                    onChange={handleInputChange} // Sử dụng hàm này để tối ưu hóa
                                 />
                                 <SendOutlined style={{ fontSize: '20px', cursor: 'pointer', color: '#999999' }} />
                             </div>

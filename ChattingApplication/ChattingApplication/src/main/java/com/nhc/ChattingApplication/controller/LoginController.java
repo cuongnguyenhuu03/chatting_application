@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nhc.ChattingApplication.entity.User;
+import com.nhc.ChattingApplication.repository.UserRepository;
 import com.nhc.ChattingApplication.response.EntityResponse;
 import com.nhc.ChattingApplication.util.SecurityUtil;
 
@@ -18,12 +19,15 @@ public class LoginController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityUtil securityUtil;
+    private final UserRepository userRepository;
 
     public LoginController(
+            UserRepository userRepository,
             AuthenticationManagerBuilder authenticationManagerBuilder,
             SecurityUtil securityUtil) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
@@ -38,7 +42,9 @@ public class LoginController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String access_token = this.securityUtil.createAccessToken(user.getEmail());
+        User currentUser = this.userRepository.findByEmail(user.getEmail());
+
+        String access_token = this.securityUtil.createAccessToken(user.getEmail(), currentUser.getId());
 
         EntityResponse e = new EntityResponse();
         e.setDT(access_token);

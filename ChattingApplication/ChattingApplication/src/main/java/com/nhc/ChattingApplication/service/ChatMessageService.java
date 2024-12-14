@@ -22,11 +22,11 @@ public class ChatMessageService {
 
     public ChatMessage save(ChatMessage chatMessage) {
 
-        var chatRoom = chatRoomService
-                .getChatRoomName(chatMessage.getSender().getId(), chatMessage.getReceiver().getId(), true)
-                .orElseThrow();
+        var chatRoom = chatRoomService.getChatRoomName(
+                chatMessage.getSender().getId(),
+                chatMessage.getReceiver().getId(),
+                true);
         chatMessage.setRoomName(chatRoom);
-
         this.chatMessageRepository.save(chatMessage);
         return chatMessage;
     }
@@ -34,7 +34,7 @@ public class ChatMessageService {
     public List<ChatMessage> findChatMessages(
             Long senderId,
             Long recipientId) {
-        var chatroomName = chatRoomService.getChatRoomName(senderId, recipientId, false).get();
+        var chatroomName = chatRoomService.getChatRoomName(senderId, recipientId, false);
         List<ChatMessage> chatList = new ArrayList<>();
         chatList = this.chatMessageRepository.findByRoomName(chatroomName);
         return chatList;

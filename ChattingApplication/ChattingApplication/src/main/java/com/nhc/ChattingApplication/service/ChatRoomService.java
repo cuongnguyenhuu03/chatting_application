@@ -1,7 +1,5 @@
 package com.nhc.ChattingApplication.service;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 import com.nhc.ChattingApplication.entity.ChatRoom;
@@ -21,22 +19,24 @@ public class ChatRoomService {
         this.userRepository = userRepository;
     }
 
-    public Optional<String> getChatRoomName(
+    public String getChatRoomName(
             Long senderId,
             Long recipientId,
             boolean createNewRoomIfNotExists) {
 
-        return chatRoomRepository
-                .findBySenderIdAndReceiverId(senderId, recipientId)
-                .map(ChatRoom::getChatName)
-                .or(() -> {
-                    if (createNewRoomIfNotExists) {
-                        var chatRoomName = createChatName(senderId, recipientId);
-                        return Optional.of(chatRoomName);
-                    }
+        ChatRoom currentChatRoomSR = this.chatRoomRepository.findBySenderIdAndReceiverId(senderId, recipientId);
+        ChatRoom currentChatRoomRS = this.chatRoomRepository.findBySenderIdAndReceiverId(recipientId, senderId);
 
-                    return Optional.empty();
-                });
+        if (currentChatRoomSR != null && currentChatRoomSR.getChatName() != null) {
+            return currentChatRoomSR.getChatName();
+        } else if (currentChatRoomRS != null && currentChatRoomRS.getChatName() != null) {
+            return currentChatRoomRS.getChatName();
+        } else {
+            if (createNewRoomIfNotExists) {
+                return createChatName(senderId, recipientId);
+            }
+            return null;
+        }
     }
 
     private String createChatName(Long senderId, Long recipientId) {
@@ -49,9 +49,9 @@ public class ChatRoomService {
         senderRecipientRoom.setReceiver(this.userRepository.findById(recipientId).get());
 
         ChatRoom recipientSenderRoom = new ChatRoom();
-        senderRecipientRoom.setChatName(chatName);
-        senderRecipientRoom.setSender(this.userRepository.findById(recipientId).get());
-        senderRecipientRoom.setReceiver(this.userRepository.findById(senderId).get());
+        recipientSenderRoom.setChatName(chatName);
+        recipientSenderRoom.setSender(this.userRepository.findById(recipientId).get());
+        recipientSenderRoom.setReceiver(this.userRepository.findById(senderId).get());
 
         chatRoomRepository.save(senderRecipientRoom);
         chatRoomRepository.save(recipientSenderRoom);

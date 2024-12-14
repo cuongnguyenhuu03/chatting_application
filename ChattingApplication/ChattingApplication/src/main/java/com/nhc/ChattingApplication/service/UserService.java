@@ -16,6 +16,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public User fetchById(Long id) {
+        return this.userRepository.findById(id).get();
+    }
+
     public User getUserByEmail(String email) {
         User user = this.userRepository.findByEmail(email);
         return user;

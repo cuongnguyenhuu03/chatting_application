@@ -9,6 +9,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.nhc.ChattingApplication.entity.ChatMessage;
 import com.nhc.ChattingApplication.entity.ChatNotification;
@@ -62,6 +63,13 @@ public class ChatController {
 
     @MessageMapping("/chat")
     public void processMessage(@Payload ChatMessage chatMessage) {
+
+        User sender = this.userService.fetchById(chatMessage.getSender().getId());
+        chatMessage.setSender(sender);
+
+        User receiver = this.userService.fetchById(chatMessage.getReceiver().getId());
+        chatMessage.setReceiver(receiver);
+
         ChatMessage savedMsg = chatMessageService.save(chatMessage);
 
         ChatNotification chatNotification = new ChatNotification();
@@ -74,6 +82,19 @@ public class ChatController {
                 chatMessage.getReceiver().getEmail(),
                 "/queue/messages",
                 chatNotification);
+    }
+
+    @GetMapping("/messages/{senderId}/{recipientId}")
+    public ResponseEntity<EntityResponse> findChatMessages(
+            @PathVariable Long senderId,
+            @PathVariable Long recipientId) {
+        List<ChatMessage> chatList = chatMessageService.findChatMessages(senderId, recipientId);
+        EntityResponse e = new EntityResponse();
+        e.setDT(chatList);
+        e.setEC(200);
+        e.setEM("success");
+        return ResponseEntity
+                .ok(e);
     }
 
 }
